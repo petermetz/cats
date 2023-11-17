@@ -456,7 +456,13 @@ public class FuzzingDataFactory {
                 .map(key -> startingOneAnyOfs
                         .entrySet()
                         .stream()
-                        .filter(entry -> entry.getKey().startsWith(key))
+                        .filter(entry -> {
+                            // final Boolean startsWith = entry.getKey().startsWith(key);
+                            final String x = entry.getKey().contains("_OF") ? entry.getKey().substring(0, entry.getKey().indexOf("_OF") - 3) : entry.getKey();
+                            final Boolean isMatch = x.equals(key);
+                            // logger.debug("x={}, key={}, isMatch={} --- startsWith={}", x, key, isMatch, startsWith);
+                            return isMatch;
+                        })
                         .collect(Collectors.toMap(stringMapEntry -> key, Map.Entry::getValue, (map1, map2) -> {
                             Map<String, JsonElement> newMap = new HashMap<>();
                             newMap.putAll(map1);
